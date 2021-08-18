@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import me.eric.cost_annotation.TimeCost;
+
 /**
  * @Author: eric
  * @CreateDate: 8/17/21 7:58 PM
@@ -20,8 +22,14 @@ public class MainActivity extends AppCompatActivity {
         testTime();
     }
 
+    @TimeCost(description = "测试首页testTime方法耗时")
     private void testTime() {
         Log.e("TAG","我打印一下看看");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

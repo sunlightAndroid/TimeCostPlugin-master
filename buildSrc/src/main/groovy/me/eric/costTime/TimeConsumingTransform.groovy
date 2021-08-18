@@ -4,8 +4,6 @@ import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.utils.FileUtils
 
-import java.util.jar.JarOutputStream
-import java.util.zip.ZipEntry
 
 /**
  *  统计耗时时间的

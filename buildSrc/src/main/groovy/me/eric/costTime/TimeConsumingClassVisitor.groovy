@@ -21,11 +21,8 @@ class TimeConsumingClassVisitor extends ClassVisitor {
     @Override
     MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions)
-        println("visitMethod before " + name)
         if ("<init>" != name && "testTime" == name && mv != null) {
             mv = new TimeConsumingMethodVisitor(mv)
-
-            println("visitMethod end " + name)
         }
         return mv
     }

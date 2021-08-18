@@ -1,2 +1,4 @@
+include ':cost_processor'
+include ':cost-annotation'
 include ':app'
 rootProject.name = "TimeCostPlugin-master"
