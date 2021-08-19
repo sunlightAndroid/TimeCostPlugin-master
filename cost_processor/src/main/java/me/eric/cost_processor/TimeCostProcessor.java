@@ -10,6 +10,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.Set;
 
@@ -19,9 +20,9 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
+import javax.tools.JavaFileObject;
 
 import me.eric.cost_annotation.TimeCost;
-
 
 
 /**
@@ -49,39 +50,74 @@ public class TimeCostProcessor extends AbstractProcessor {
         String root_project_dir = processingEnv.getOptions().get("root_project_dir");
         System.out.println(TAG + " root_project_dir>>> " + root_project_dir);
 
-        // 生成json文件
+
         // 生成类映射关系文件
+        String packageName = "me.eric.timeCost.sample";
+        String className = "CostMapping_" + System.currentTimeMillis() ;
+        StringBuilder builder = new StringBuilder();
+        builder.append("package " + packageName + ";").append("\n\n");
+        builder.append("import java.util.HashMap;").append("\n");
+        builder.append("import java.util.Map;").append("\n\n");
+        builder.append("public class ").append(className).append("{").append("\n\n");
+        builder.append("    public static Map<String, String> get() {").append("\n\n");
+        builder.append("        Map<String, String> map = new HashMap<>();").append("\n\n");
+
+        // 生成json文件
         JsonArray jsonArray = new JsonArray();
 
-        Set<? extends Element> elements= roundEnvironment.getElementsAnnotatedWith(TimeCost.class);
+        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(TimeCost.class);
+        
+        if (elements.size() < 1) return false;
+
         System.out.println(TAG + "被标记的注解有：" + elements.size());
-        for (Element element : elements){
+        for (Element element : elements) {
             TypeElement parentElement = (TypeElement) element.getEnclosingElement();
-            String  parentClassName = parentElement.getSimpleName().toString();
-            String  parentFullPath = parentElement.getQualifiedName().toString();
+            String parentClassName = parentElement.getSimpleName().toString();
+            String parentFullPath = parentElement.getQualifiedName().toString();
             TimeCost annotation = element.getAnnotation(TimeCost.class);
             String description = annotation.description();
             String methodName = element.getSimpleName().toString();
-            System.out.println(TAG + " 注解解析>>> " +   "   " + parentFullPath);
-            System.out.println(TAG + " 注解解析>>> " +   "   " + parentClassName);
-            System.out.println(TAG + " 注解解析>>> " +   "   " + methodName);
-            System.out.println(TAG + " 注解解析>>> " +   "   " + description);
+            System.out.println(TAG + " 注解解析>>> " + "   " + parentFullPath);
+            System.out.println(TAG + " 注解解析>>> " + "   " + parentClassName);
+            System.out.println(TAG + " 注解解析>>> " + "   " + methodName);
+            System.out.println(TAG + " 注解解析>>> " + "   " + description);
 
+            // 生成类文件
+            builder.append("        map.put(\"" + parentFullPath + "\", \"" + methodName + "\");").append("\n");
+
+            // 生成json文件
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("path",parentFullPath);
-            jsonObject.addProperty("name",methodName);
-            jsonObject.addProperty("description",description);
+            jsonObject.addProperty("path", parentFullPath);
+            jsonObject.addProperty("name", methodName);
+            jsonObject.addProperty("description", description);
             jsonArray.add(jsonObject);
         }
+        builder.append("        return map;").append("\n");
+        builder.append("    }").append("\n");
+        builder.append("}");
+        System.out.println(TAG + " 生成的类文件>>> " + "   " + builder.toString());
 
-        System.out.println(TAG + " 生成的json文件>>> " +   "   " + jsonArray.toString());
+        // 将类文件写入本地
+        try {
+            String fullClassName = packageName + "." + className;
+            JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(fullClassName);
+            Writer writer = sourceFile.openWriter();
+            writer.write(builder.toString());
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        File dirFile = new File(root_project_dir,"jsonFile");
-        if(!dirFile.exists()){
+
+        System.out.println(TAG + " 生成的json文件>>> " + "   " + jsonArray.toString());
+
+        File dirFile = new File(root_project_dir, "jsonFile");
+        if (!dirFile.exists()) {
             dirFile.mkdirs();
         }
 
-        File itemFile = new File(dirFile,System.currentTimeMillis() + ".json");
+        File itemFile = new File(dirFile, System.currentTimeMillis() + ".json");
         try {
             FileWriter writer = new FileWriter(itemFile);
             BufferedWriter bw = new BufferedWriter(writer);
@@ -89,30 +125,8 @@ public class TimeCostProcessor extends AbstractProcessor {
             bw.flush();
             bw.close();
         } catch (IOException e) {
-           throw new  RuntimeException("Error while create json file",e);
+            throw new RuntimeException("Error while create json file", e);
         }
-
-
-
-        // 写入自动生成的类到本地文件中
-//        try {
-//            String mappingFullClassName = "me.eric.router." + className;
-//
-//            System.out.println(TAG + " className  ： " + className);
-//            System.out.println(TAG + " package name ： " + mappingFullClassName);
-//
-//            JavaFileObject source = processingEnv.getFiler()
-//                    .createSourceFile(mappingFullClassName);
-//            Writer writer = source.openWriter();
-//            writer.write(builder.toString());
-//            writer.flush();
-//            writer.close();
-//        } catch (Exception ex) {
-//            throw new RuntimeException("Error while create file", ex);
-//        }
-
-
-
         return false;
     }
 

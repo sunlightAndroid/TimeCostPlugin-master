@@ -86,6 +86,7 @@ class TimeConsumingTransform extends Transform {
                                 jarInput.contentTypes,
                                 jarInput.scopes, Format.JAR)
                 collector.collectFromJarFile(jarInput.file)
+                handleJarFile(jarInput.file)
                 FileUtils.copyFile(jarInput.file, dest)
             }
         }
@@ -141,7 +142,7 @@ class TimeConsumingTransform extends Transform {
             if (classFile.absolutePath.contains(PACKAGE_NAME)
                     && classFile.name.startsWith(CLASS_NAME_PREFIX)
                     && classFile.name.endsWith(CLASS_FILE_SUFFIX)) {
-                 def data = TimeConsumingByteCodeGenerator.get(classFile)
+                 TimeConsumingByteCodeGenerator.get(classFile)
             }
         } else {
             classFile.listFiles().each {
@@ -150,7 +151,7 @@ class TimeConsumingTransform extends Transform {
         }
     }
 
-    void handleJarFile(){
+    void handleJarFile(File jarFile){
 
     }
 

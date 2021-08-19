@@ -17,21 +17,24 @@ class CostTimePlugin implements Plugin<Project> {
             appExtension.registerTransform(new TimeConsumingTransform())
         }
 
-        if (project.extensions.findByName("kapt") != null) {
-            project.extensions.findByName("kapt").arguments {
-                arg("root_project_dir", project.getRootDir().absolutePath)
-            }
-        }
-
-        if (!project.plugins.hasPlugin(AppPlugin)) {
-            return
-        }
-
         // 将app的根目录传递过来
         if (project.extensions.findByName("kapt") != null) {
             project.extensions.findByName("kapt").arguments {
                 arg("root_project_dir", project.getRootDir().absolutePath)
             }
+        }
+
+        // 清理产物
+        project.clean.doFirst{
+            // 删除上一次的mapping目录
+            File file  = new File(project.rootProject.rootDir,"jsonFile")
+            if(file.exists()){
+                file.deleteDir()
+            }
+        }
+
+        if (!project.plugins.hasPlugin(AppPlugin)) {
+            return
         }
 
         println("I am from costPlugin, apply from ${project.name}")
