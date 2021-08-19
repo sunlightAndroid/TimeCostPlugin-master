@@ -74,7 +74,7 @@ class TimeConsumingTransform extends Transform {
                                 directoryInput.scopes,
                                 Format.DIRECTORY)
                 collector.collect(directoryInput.file)
-                handleFile(directoryInput.file)
+                handleFile(directoryInput.file, collector)
                 FileUtils.copyDirectory(directoryInput.file, destDir)
             }
 
@@ -86,13 +86,13 @@ class TimeConsumingTransform extends Transform {
                                 jarInput.contentTypes,
                                 jarInput.scopes, Format.JAR)
                 collector.collectFromJarFile(jarInput.file)
-                handleJarFile(jarInput.file)
+                handleJarFile(jarInput.file,collector)
                 FileUtils.copyFile(jarInput.file, dest)
             }
         }
 
 
-        collector.getMappingClassName().each { file ->
+        collector.getMappingClassFiles().each { file ->
 
            // def data = TimeConsumingByteCodeGenerator.get(file)
 
@@ -136,9 +136,14 @@ class TimeConsumingTransform extends Transform {
     private static final String CLASS_NAME_PREFIX = 'MainActivity'
     private static final String CLASS_FILE_SUFFIX = '.class'
 
-    void handleFile(File classFile){
+    void handleFile(File classFile, TimeConsumingCollector collector ){
         if (classFile == null || !classFile.exists()) return
         if (classFile.isFile()) {
+
+            collector.getMappingClassFiles().each { file ->
+
+            }
+
             if (classFile.absolutePath.contains(PACKAGE_NAME)
                     && classFile.name.startsWith(CLASS_NAME_PREFIX)
                     && classFile.name.endsWith(CLASS_FILE_SUFFIX)) {
@@ -146,12 +151,12 @@ class TimeConsumingTransform extends Transform {
             }
         } else {
             classFile.listFiles().each {
-                handleFile(it)
+                handleFile(it,collector)
             }
         }
     }
 
-    void handleJarFile(File jarFile){
+    void handleJarFile(File jarFile,TimeConsumingCollector collector ){
 
     }
 

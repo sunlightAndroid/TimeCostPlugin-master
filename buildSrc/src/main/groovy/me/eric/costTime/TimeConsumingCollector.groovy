@@ -15,14 +15,21 @@ class TimeConsumingCollector {
     private static final String CLASS_FILE_SUFFIX = '.class'
 
     private final Set<File> consumingClassFiles = new HashSet<>()
+    private final Set<String> consumingClassNames = new HashSet<>()
 
     /**
      * 获取收集好的映射表类名
      * @return
      */
-    Set<File> getMappingClassName() {
+    Set<File> getMappingClassFiles() {
         return consumingClassFiles
     }
+
+    Set<File> getMappingClassNames() {
+        return consumingClassNames
+    }
+
+
 
     /**
      * 收集class文件或者class文件目录中的映射表类。
@@ -34,10 +41,15 @@ class TimeConsumingCollector {
             if (classFile.absolutePath.contains(PACKAGE_NAME)
                     && classFile.name.startsWith(CLASS_NAME_PREFIX)
                     && classFile.name.endsWith(CLASS_FILE_SUFFIX)) {
+                System.out.println("我看看类名1：" + classFile.absolutePath)
                 System.out.println("我看看类名1：" + classFile.name)
+                // CostMapping_1629390609235.class
 
                 String className =
                         classFile.name.replace(CLASS_FILE_SUFFIX, "")
+
+
+                consumingClassNames.add(className)
                 consumingClassFiles.add(classFile)
             }
         } else {
@@ -70,6 +82,7 @@ class TimeConsumingCollector {
                         .replace("/", "")
                         .replace(CLASS_FILE_SUFFIX, "")
 
+                consumingClassNames.add(className)
                 consumingClassFiles.add(jarFile)
             }
         }
