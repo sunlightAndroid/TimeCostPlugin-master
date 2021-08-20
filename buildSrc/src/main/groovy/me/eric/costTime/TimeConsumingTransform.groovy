@@ -4,6 +4,8 @@ import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.utils.FileUtils
 
+import java.lang.reflect.Method
+
 
 /**
  *  统计耗时时间的
@@ -139,10 +141,6 @@ class TimeConsumingTransform extends Transform {
     void handleFile(File classFile, TimeConsumingCollector collector ){
         if (classFile == null || !classFile.exists()) return
         if (classFile.isFile()) {
-
-            collector.getMappingClassFiles().each { file ->
-
-            }
 
             if (classFile.absolutePath.contains(PACKAGE_NAME)
                     && classFile.name.startsWith(CLASS_NAME_PREFIX)

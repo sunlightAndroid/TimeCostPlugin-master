@@ -1,12 +1,12 @@
 package me.eric.costTime
 
-import org.objectweb.asm.ClassReader
+import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.commons.AdviceAdapter
 
-import java.lang.reflect.Method
 
 class TimeConsumingClassVisitor extends ClassVisitor {
 
@@ -27,17 +27,40 @@ class TimeConsumingClassVisitor extends ClassVisitor {
     MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         System.out.println("》》》》》 TimeConsumingClassVisitor:" + "  MethodName:" + name + " desc:" + desc + " signature:" + signature)
         // 》》》》》 TimeConsumingClassVisitor:  MethodName:testTime desc:()V signature:null
-        collector.getMappingClassFiles().each { file ->
-            Class clazz = Class.forName(file.absolutePath)
-            Method method = clazz.getDeclaredMethod("get")
-            Map<String, String> hashMap = method.invoke(clazz.newInstance())
-            System.out.println("》》》》》 TimeConsumingClassVisitor1111:" + hashMap.toString())
-        }
 
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions)
-        if ("<init>" != name && "testTime" == name && mv != null) {
-            mv = new TimeConsumingMethodVisitor(mv)
+        mv = new AdviceAdapter(Opcodes.ASM5,mv,access,name,signature){
+            def inject = false;
+            @Override
+            AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                if (descriptor == "TimeCost") {
+                    inject = true
+                }
+                return super.visitAnnotation(descriptor, visible)
+            }
+
+            @Override
+            protected void onMethodEnter() {
+                super.onMethodEnter()
+                if(inject){
+                      mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/eric/timeCost/sample/TimeLogger", "start", "()V", false);
+                }
+
+
+            }
+
+            @Override
+            protected void onMethodExit(int opcode) {
+                super.onMethodExit(opcode)
+                if(inject){
+                      mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/eric/timeCost/sample/TimeLogger", "end", "()V", false);
+                }
+            }
         }
+
+//        if ("<init>" != name && "testTime" == name && mv != null) {
+//            mv = new TimeConsumingMethodVisitor(mv)
+//        }
         return mv
     }
 }
