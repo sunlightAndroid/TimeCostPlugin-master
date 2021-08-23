@@ -20,7 +20,7 @@ class TimeConsumingMethodVisitor extends MethodVisitor {
         mv.visitCode()
         if (inject) {
             mv.visitLdcInsn(methodName)
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/eric/timeCost/sample/TimeLogger", "start", "(Ljava/lang/String;)V", false);
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/eric/timeCost/log/TimeLogger", "start", "(Ljava/lang/String;)V", false);
         }
         System.out.println(">>>>>TimeConsumingMethodVisitor visitCode:")
     }
@@ -29,7 +29,7 @@ class TimeConsumingMethodVisitor extends MethodVisitor {
     void visitInsn(int opcode) {
         // 方法调用之后
         if (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN && inject) {
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/eric/timeCost/sample/TimeLogger", "end", "()V", false);
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/eric/timeCost/log/TimeLogger", "end", "()V", false);
         }
         mv.visitInsn(opcode)
     }
