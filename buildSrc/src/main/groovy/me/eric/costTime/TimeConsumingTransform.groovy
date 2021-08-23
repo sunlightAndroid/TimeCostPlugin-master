@@ -141,12 +141,7 @@ class TimeConsumingTransform extends Transform {
     void handleFile(File classFile, TimeConsumingCollector collector ){
         if (classFile == null || !classFile.exists()) return
         if (classFile.isFile()) {
-
-            if (classFile.absolutePath.contains(PACKAGE_NAME)
-                    && classFile.name.startsWith(CLASS_NAME_PREFIX)
-                    && classFile.name.endsWith(CLASS_FILE_SUFFIX)) {
-                 TimeConsumingByteCodeGenerator.get(classFile)
-            }
+            TimeConsumingByteCodeGenerator.get(classFile)
         } else {
             classFile.listFiles().each {
                 handleFile(it,collector)

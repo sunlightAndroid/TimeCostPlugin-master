@@ -12,12 +12,16 @@ package me.eric.timeCost.sample;
 public class TimeLogger {
     public static long time = 0;
 
-    public static void start() {
+    public static void start(String name) {
+        System.out.println("<<<<<<<<<<<<<<<<<<<<<start");
         time = System.currentTimeMillis();
+        System.out.println("方法名：" + name);
     }
+
 
     public static void end() {
         time = System.currentTimeMillis() - time;
-        System.out.println("方法耗时：" + time);
+        System.out.println("方法耗时：" + time + " ms");
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>end");
     }
 }

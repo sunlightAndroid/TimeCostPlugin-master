@@ -2,6 +2,7 @@ package me.eric.timeCost;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,4 +33,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @TimeCost(description = "测试首页pullData方法耗时")
+    public void pullData(View view) {
+        Log.e("TAG","拉取数据");
+        try {
+            Thread.sleep(800);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
