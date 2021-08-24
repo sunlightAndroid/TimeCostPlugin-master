@@ -22,7 +22,9 @@
     </annotationProcessing>
     <bytecodeTargetLevel target="1.7">
       <module name="TimeCostPlugin-master.app" target="1.8" />
+      <module name="TimeCostPlugin-master.biz_video" target="1.8" />
       <module name="TimeCostPlugin-master.buildSrc" target="1.8" />
+      <module name="TimeCostPlugin-master.util" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

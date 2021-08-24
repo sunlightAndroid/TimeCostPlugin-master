@@ -1,5 +1,6 @@
 package me.eric.timeCost;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import me.eric.biz.video.AudioActivity;
+import me.eric.biz.video.VideoActivity;
 import me.eric.cost_annotation.TimeCost;
 
 /**
@@ -41,5 +44,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        startActivity(new Intent(this, AudioActivity.class));
     }
 }

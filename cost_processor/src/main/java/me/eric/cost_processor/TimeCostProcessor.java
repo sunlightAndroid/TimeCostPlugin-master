@@ -129,37 +129,38 @@ public class TimeCostProcessor extends AbstractProcessor {
         }
 
         // 生成一个TimeLogger类
-        StringBuilder logBuilder = new StringBuilder();
-        logBuilder.append("package me.eric.timeCost.log;").append("\n");
-        logBuilder.append("public class TimeLogger {").append("\n");
-        logBuilder.append("    public static long time = 0;").append("\n");
-        logBuilder.append("    public static void start(String name) {").append("\n");
-        logBuilder.append("        System.out.println(\"<<<<<<<<<<<<<<<<<<<<<start\");").append("\n");
-        logBuilder.append("        time = System.currentTimeMillis();").append("\n");
-        logBuilder.append("        System.out.println(\"方法名：\" + name);").append("\n");
-        logBuilder.append("    }").append("\n\n");
-
-        logBuilder.append("    public static void end() {").append("\n");
-        logBuilder.append("        time = System.currentTimeMillis() - time;").append("\n");
-        logBuilder.append("        System.out.println(\"方法耗时：\" + time + \" ms\");").append("\n");
-        logBuilder.append("        System.out.println(\">>>>>>>>>>>>>>>>>>>>>>>end\");").append("\n");
-        logBuilder.append("    }").append("\n");
-        logBuilder.append("}").append("\n");
-        System.out.println("logBuilder:" + logBuilder.toString());
-
-        // 生成日志类文件到本地
-        try {
-            String fullLogClassName = "me.eric.timeCost.log.TimeLogger";
-            JavaFileObject logFile = processingEnv.getFiler()
-                    .createSourceFile(fullLogClassName);
-
-            Writer writer = logFile.openWriter();
-            writer.write(logBuilder.toString());
-            writer.flush();
-            writer.close();
-        } catch (Throwable ex) {
-            throw new RuntimeException("Error while create TimeLogger file", ex);
-        }
+//        StringBuilder logBuilder = new StringBuilder();
+//        logBuilder.append("package me.eric.timeCost.log;").append("\n");
+//        logBuilder.append("public class TimeLogger {").append("\n");
+//        logBuilder.append("    public static long time = 0;").append("\n");
+//        logBuilder.append("    public static void start(String name) {").append("\n");
+//        logBuilder.append("        System.out.println(\"<<<<<<<<<<<<<<<<<<<<<start\");").append("\n");
+//        logBuilder.append("        time = System.currentTimeMillis();").append("\n");
+//        logBuilder.append("        System.out.println(\"方法名：\" + name);").append("\n");
+//        logBuilder.append("    }").append("\n\n");
+//
+//        logBuilder.append("    public static void end() {").append("\n");
+//        logBuilder.append("        time = System.currentTimeMillis() - time;").append("\n");
+//        logBuilder.append("        System.out.println(\"方法耗时：\" + time + \" ms\");").append("\n");
+//        logBuilder.append("        System.out.println(\">>>>>>>>>>>>>>>>>>>>>>>end\");").append("\n");
+//        logBuilder.append("    }").append("\n");
+//        logBuilder.append("}").append("\n");
+//        System.out.println("logBuilder:" + logBuilder.toString());
+//
+//        // 生成日志类文件到本地
+//        try {
+//            System.out.println("=================执行了几次================");
+//            String fullLogClassName = "me.eric.timeCost.log.TimeLogger";
+//            JavaFileObject logFile = processingEnv.getFiler()
+//                    .createSourceFile(fullLogClassName);
+//
+//            Writer writer = logFile.openWriter();
+//            writer.write(logBuilder.toString());
+//            writer.flush();
+//            writer.close();
+//        } catch (Throwable ex) {
+//            throw new RuntimeException("Error while create TimeLogger file", ex);
+//        }
         return false;
     }
 

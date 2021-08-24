@@ -5,6 +5,8 @@ import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.utils.FileUtils
 
 import java.lang.reflect.Method
+import java.util.jar.JarEntry
+import java.util.jar.JarFile
 
 
 /**
@@ -88,69 +90,38 @@ class TimeConsumingTransform extends Transform {
                                 jarInput.contentTypes,
                                 jarInput.scopes, Format.JAR)
                 collector.collectFromJarFile(jarInput.file)
-                handleJarFile(jarInput.file,collector)
+                handleJarFile(jarInput.file, collector)
                 FileUtils.copyFile(jarInput.file, dest)
             }
         }
-
-
-        collector.getMappingClassFiles().each { file ->
-
-           // def data = TimeConsumingByteCodeGenerator.get(file)
-
-//            File jarFile = transformInvocation.outputProvider.
-//                    getContentLocation(
-//                            "consumingTime",
-//                            getOutputTypes(),
-//                            getScopes(),
-//                            Format.JAR)
-//
-//            if (jarFile.getParentFile().exists()) {
-//                jarFile.getParentFile().mkdirs()
-//            }
-//            if (jarFile.exists()) {
-//                jarFile.delete()
-//            }
-//
-//            // 将生成的字节码，写入本地文件
-//            FileOutputStream fos = new FileOutputStream(jarFile)
-//            JarOutputStream jarOutputStream = new JarOutputStream(fos)
-//            ZipEntry zipEntry =
-//                    new ZipEntry(TimeConsumingByteCodeGenerator.CLASS_NAME + "New"+file.name)
-//
-//            System.out.println("zipEntry name:" + TimeConsumingByteCodeGenerator.CLASS_NAME + "New"+file.name)
-//
-//            jarOutputStream.putNextEntry(zipEntry)
-//
-//
-////            println("${getName()}  consumingTimeJarFileBytes = ${TimeConsumingByteCodeGenerator.get()}")
-//
-//            jarOutputStream.write(
-//                    data)
-//            jarOutputStream.closeEntry()
-//            jarOutputStream.close()
-//            fos.close()
-        }
-
     }
 
-    private static final String PACKAGE_NAME = 'me/eric/timeCost'
-    private static final String CLASS_NAME_PREFIX = 'MainActivity'
-    private static final String CLASS_FILE_SUFFIX = '.class'
 
-    void handleFile(File classFile, TimeConsumingCollector collector ){
+    void handleFile(File classFile, TimeConsumingCollector collector) {
         if (classFile == null || !classFile.exists()) return
         if (classFile.isFile()) {
             TimeConsumingByteCodeGenerator.get(classFile)
         } else {
             classFile.listFiles().each {
-                handleFile(it,collector)
+                handleFile(it, collector)
             }
         }
     }
 
-    void handleJarFile(File jarFile,TimeConsumingCollector collector ){
-
+    void handleJarFile(File jarFile, TimeConsumingCollector collector) {
+//        Enumeration enumeration = new JarFile(jarFile).entries()
+//
+//        while (enumeration.hasMoreElements()) {
+//            JarEntry jarEntry = (JarEntry) enumeration.nextElement()
+//            String entryName = jarEntry.getName()
+//
+//            if (entryName.endsWith(".class")) {
+//                System.out.println(">>>>>>>>>>>>>>jar " + entryName)
+//
+//                TimeConsumingByteCodeGenerator.get(entryName)
+//            }
+////                me/eric/router/mapping/RouterMapping_1628851816208.class
+//        }
     }
 
 }
