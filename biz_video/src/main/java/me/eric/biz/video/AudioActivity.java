@@ -23,6 +23,11 @@ public class AudioActivity extends AppCompatActivity {
 
     @TimeCost(description = "111")
     private void play(){
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("测试一下");
     }
 }
