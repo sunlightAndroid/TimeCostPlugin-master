@@ -7,11 +7,13 @@ import org.objectweb.asm.Opcodes
 class TimeConsumingMethodVisitor extends MethodVisitor {
 
     private boolean inject = false
+    private String className
     private String methodName
 
-    TimeConsumingMethodVisitor(MethodVisitor mv, String name) {
+    TimeConsumingMethodVisitor(MethodVisitor mv, String className, String methodName) {
         super(Opcodes.ASM5, mv)
-        methodName = name
+        this.className = className
+        this.methodName = methodName
     }
 
     @Override
@@ -19,7 +21,8 @@ class TimeConsumingMethodVisitor extends MethodVisitor {
         // 方法调用之前
         mv.visitCode()
         if (inject) {
-            mv.visitLdcInsn(methodName)
+            className = className.replace("/", ".")
+            mv.visitLdcInsn(className + " ----> " + methodName)
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/eric/util/TimeLogger", "start", "(Ljava/lang/String;)V", false);
         }
         System.out.println(">>>>>TimeConsumingMethodVisitor visitCode:")

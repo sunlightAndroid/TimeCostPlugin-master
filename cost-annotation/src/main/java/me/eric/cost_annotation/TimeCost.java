@@ -17,5 +17,4 @@ import java.lang.annotation.Target;
 // 保留在字节码时期
 @Retention(RetentionPolicy.CLASS)
 public @interface TimeCost {
-    String description();
 }

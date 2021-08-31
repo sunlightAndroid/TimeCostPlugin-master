@@ -1,5 +1,7 @@
 package me.eric.util;
 
+import android.util.Log;
+
 /**
  * @Author: eric
  * @CreateDate: 8/24/21 7:13 PM
@@ -8,17 +10,18 @@ package me.eric.util;
 public class TimeLogger {
 
     public static long time = 0;
+    public static final String TAG = "TIME_COST";
 
     public static void start(String name) {
-        System.out.println("<<<<<<<<<<<<<<<<<<<<<start");
+        Log.e(TAG,"<<<<<<<<<<<<<<<<<<<<<start");
         time = System.currentTimeMillis();
-        System.out.println("方法名：" + name);
+        Log.e(TAG,"方法名：" + name);
     }
 
 
     public static void end() {
         time = System.currentTimeMillis() - time;
-        System.out.println("方法耗时：" + time + " ms");
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>end");
+        Log.e(TAG,"方法耗时：" + time + " ms");
+        Log.e(TAG,">>>>>>>>>>>>>>>>>>>>>>>end");
     }
 }

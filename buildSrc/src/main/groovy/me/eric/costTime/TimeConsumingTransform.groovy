@@ -3,6 +3,7 @@ package me.eric.costTime
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.utils.FileUtils
+import org.apache.commons.io.IOUtils
 
 import java.lang.reflect.Method
 import java.nio.file.attribute.FileTime
@@ -119,6 +120,11 @@ class TimeConsumingTransform extends Transform {
     }
 
 
+    /**
+     *  处理文件夹文件
+     * @param classFile
+     * @param collector
+     */
     void handleFile(File classFile, TimeConsumingCollector collector) {
         if (classFile == null || !classFile.exists()) return
         if (classFile.isFile()) {
@@ -130,40 +136,11 @@ class TimeConsumingTransform extends Transform {
         }
     }
 
-    void handleJarFile(File jarFile) {
-        Enumeration enumeration = new JarFile(jarFile).entries()
-
-        // 输出的jar路径
-        def outJarFile = new File(jarFile.getParent(), "temp_" + jarFile.name)
-        if (outJarFile.exists()) {
-            outJarFile.delete()
-        }
-
-        while (enumeration.hasMoreElements()) {
-            JarEntry jarEntry = (JarEntry) enumeration.nextElement()
-            String entryName = jarEntry.getName()
-
-            if (entryName.endsWith(".class")
-                    && !entryName.endsWith("TimeLogger.class")
-                    && !entryName.endsWith("TimeCost.class")
-                    && entryName.endsWith("AudioActivity.class")
-            ) {
-                System.out.println(">>>>>>>>>>>>>>jar " + jarFile.getAbsolutePath())
-                System.out.println(">>>>>>>>>>>>>>jar " + entryName)
-                System.out.println(">>>>>>>>>>>>>>jar " + jarFile.getAbsolutePath() + File.separator + entryName)
-                //  def file = new File(jarFile.getAbsolutePath()+ File.separator + entryName)
-                def path = "/Users/gechuanguang/Android/giteeWork/TimeCostPlugin-master/biz_video/build/intermediates/runtime_library_classes/debug/me/eric/biz/video/AudioActivity.class";
-                def file = new File(path)
-                System.out.println(">>>>>>>>>>>>>>jar " + file.exists())
-
-                // 写到一个新的jar文件里面
-                //   TimeConsumingByteCodeGenerator.writeJar(entryName,outJarFile)
-            }
-//                me/eric/router/mapping/RouterMapping_1628851816208.class
-        }
-    }
-
-
+    /**
+     * 处理jar包文件
+     * @param inputPath jar输入路径
+     * @param outputPath jar输出路径
+     */
     void weaveJar(String inputPath, String outputPath) throws IOException {
         def ZERO = FileTime.fromMillis(0)
         File outputJar = new File(outputPath)
@@ -175,7 +152,6 @@ class TimeConsumingTransform extends Transform {
         ZipOutputStream outputZip = new ZipOutputStream(new BufferedOutputStream(java.nio.file.Files.newOutputStream(outputJar.toPath())));
         Enumeration<? extends ZipEntry> inEntries = inputZip.entries();
 
-
         while (inEntries.hasMoreElements()) {
             ZipEntry entry = inEntries.nextElement();
             InputStream originalFile = new BufferedInputStream(inputZip.getInputStream(entry));
@@ -184,8 +160,9 @@ class TimeConsumingTransform extends Transform {
             // seperator of entry name is always '/', even in windows
             String className = outEntry.getName().replace("/", ".");
 
+            // 判断class文件是否要修改
             if (!isWeavableClass(className)) {
-                newEntryContent = org.apache.commons.io.IOUtils.toByteArray(originalFile);
+                newEntryContent = IOUtils.toByteArray(originalFile);
             } else {
                 newEntryContent = TimeConsumingByteCodeGenerator.writeJar(originalFile)
             }
@@ -214,7 +191,7 @@ class TimeConsumingTransform extends Transform {
     }
 
     static boolean isWeavableClass(String fullQualifiedClassName) {
-        return fullQualifiedClassName.endsWith(".class") &&!fullQualifiedClassName.contains("R\$")  && !fullQualifiedClassName.contains("R.class") && !fullQualifiedClassName.contains("BuildConfig.class")
+        return fullQualifiedClassName.endsWith(".class") && !fullQualifiedClassName.contains("R.class") && !fullQualifiedClassName.contains("BuildConfig.class")&& !fullQualifiedClassName.contains("module-info")
     }
 
 }

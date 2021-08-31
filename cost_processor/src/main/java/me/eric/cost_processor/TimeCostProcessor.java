@@ -75,12 +75,10 @@ public class TimeCostProcessor extends AbstractProcessor {
             String parentClassName = parentElement.getSimpleName().toString();
             String parentFullPath = parentElement.getQualifiedName().toString();
             TimeCost annotation = element.getAnnotation(TimeCost.class);
-            String description = annotation.description();
             String methodName = element.getSimpleName().toString();
             System.out.println(TAG + " 注解解析>>> " + "   " + parentFullPath);
             System.out.println(TAG + " 注解解析>>> " + "   " + parentClassName);
             System.out.println(TAG + " 注解解析>>> " + "   " + methodName);
-            System.out.println(TAG + " 注解解析>>> " + "   " + description);
 
             // 生成类文件
             builder.append("        map.put(\"" + parentFullPath + "\", \"" + methodName + "\");").append("\n");
@@ -89,7 +87,6 @@ public class TimeCostProcessor extends AbstractProcessor {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("path", parentFullPath);
             jsonObject.addProperty("name", methodName);
-            jsonObject.addProperty("description", description);
             jsonArray.add(jsonObject);
         }
         builder.append("        return map;").append("\n");

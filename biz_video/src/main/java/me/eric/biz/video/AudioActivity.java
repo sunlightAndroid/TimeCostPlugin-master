@@ -21,7 +21,7 @@ public class AudioActivity extends AppCompatActivity {
         play();
     }
 
-    @TimeCost(description = "111")
+    @TimeCost()
     private void play(){
         try {
             Thread.sleep(500);

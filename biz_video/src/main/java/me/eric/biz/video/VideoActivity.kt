@@ -12,7 +12,7 @@ class VideoActivity : AppCompatActivity() {
     }
 
 
-    @TimeCost(description = "播放音频")
+    @TimeCost()
     fun playVideo(){
         println("测试下")
     }

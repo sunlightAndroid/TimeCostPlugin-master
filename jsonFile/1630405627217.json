@@ -1,0 +1,12 @@
+[
+  {
+    "path": "me.eric.biz.video.AudioActivity",
+    "name": "play",
+    "description": "111"
+  },
+  {
+    "path": "me.eric.biz.video.VideoActivity",
+    "name": "playVideo",
+    "description": "播放音频"
+  }
+]

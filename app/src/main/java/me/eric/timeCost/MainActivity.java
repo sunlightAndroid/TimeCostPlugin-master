@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         testTime();
     }
 
-    @TimeCost(description = "测试首页testTime方法耗时")
+    @TimeCost()
     private void testTime() {
         Log.e("TAG","我打印一下看看");
         try {
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @TimeCost(description = "测试首页pullData方法耗时")
+    @TimeCost()
     public void pullData(View view) {
         Log.e("TAG","拉取数据");
         try {

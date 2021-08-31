@@ -1,6 +1,7 @@
 package me.eric.timeCost.sample;
 
 import me.eric.cost_annotation.TimeCost;
+import me.eric.util.TimeLogger;
 
 /**
  * @Author: eric

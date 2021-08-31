@@ -8,7 +8,7 @@ import org.objectweb.asm.Opcodes
 
 class TimeConsumingClassVisitor extends ClassVisitor {
 
-    TimeConsumingCollector collector = new TimeConsumingCollector();
+    def className = "";
 
     TimeConsumingClassVisitor(ClassWriter cv) {
         super(Opcodes.ASM5, cv)
@@ -16,7 +16,10 @@ class TimeConsumingClassVisitor extends ClassVisitor {
 
     @Override
     void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        cv.visit(version, access, name, signature, superName, interfaces)
+        if (name != "module-info") {
+            cv.visit(version, access, name, signature, superName, interfaces)
+            className = name
+        }
         System.out.println("》》》》》 TimeConsumingClassVisitor:" + "  name:" + name + " signature:" + signature + " superName:" + superName)
         // 》》》》》 TimeConsumingClassVisitor:  name:me/eric/timeCost/MainActivity signature:null superName:androidx/appcompat/app/AppCompatActivity
     }
@@ -28,7 +31,7 @@ class TimeConsumingClassVisitor extends ClassVisitor {
 
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions)
         if ("<init>" != name && mv != null) {
-            mv = new TimeConsumingMethodVisitor(mv,name)
+            mv = new TimeConsumingMethodVisitor(mv,className, name)
         }
         return mv
     }

@@ -19,7 +19,7 @@ class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
-    @TimeCost(description = "测试登录方法耗时")
+    @TimeCost()
     void login(){
     }
 }

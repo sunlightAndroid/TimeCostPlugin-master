@@ -38,28 +38,10 @@ class TimeConsumingByteCodeGenerator {
             ClassVisitor cv = new TimeConsumingClassVisitor(cw)
             cr.accept(cv, ClassReader.EXPAND_FRAMES)
             return cw.toByteArray()
-        }catch(Exception e){
-            System.out.println(">>>>>>>>>>>>>>>>sha " + e.getMessage())
+        } catch (Exception e) {
+            throw new RuntimeException("Error while writeJar ", e)
         }
-
-        return new byte[0]
-
-
-//        ClassReader cr = new ClassReader(inputStream)
-//
-//        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS)
-//
-//        ClassVisitor cv = new TimeConsumingClassVisitor(cw)
-//
-//        cr.accept(cv, ClassReader.SKIP_DEBUG)
-//
-//        byte[] data = cw.toByteArray()
-//
-//        System.out.println(">>>>>>>>>>>>writeJar  " + data.length)
-//
-//        return data
     }
-
 }
 
 
